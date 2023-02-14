@@ -127,12 +127,12 @@ class LoginScreen(widget.QFrame):
             self.window().executeDML("LOCK TABLES users.user WRITE;")
             results = self.window().executeProcedure(procedureName="users.login_user", args=(username, password))
             self.window().executeDML("UNLOCK TABLES;")
-            userExists = True if len(results) == 1 else False
+            userExists = True if results[0][0][0] is not None else False
         else:
             userExists = True
 
         if fullUsername and fullPassword and userExists:
-            userToken = results[0]
+            userToken = results[0][0][0]
             event = ccore.SignInEvent(userToken)
             core.QCoreApplication.postEvent(self.window(), event)
             utilities.logger.information("Sign-In successful")
@@ -144,7 +144,7 @@ class LoginScreen(widget.QFrame):
             elif fullPassword is False:
                 self.displaySignInFeedback("Password field empty", False)
             elif userExists is False:
-                self.displaySignInFeedback("User does not exist", False)
+                self.displaySignInFeedback("Invalid username or password", False)
         self.loginContainer.setDisabled(False)
 
     def displaySignInFeedback(self, feedback: str, success: bool) -> None:

@@ -18,6 +18,7 @@ class AppWindow(widget.QMainWindow):
         settings.DPI.setScreen(self.screen)
         self.databaseConnection = None
         self.isExiting = False
+        self.userToken = None
         self.threadManager = core.QThreadPool()
         self.disconnectOverlay = cwidget.DisconnectOverlay(self)
         self.disconnectOverlay.move(0, 0)
@@ -41,10 +42,11 @@ class AppWindow(widget.QMainWindow):
         self.loginBox = cwidget.LoginScreen(self)
         self.windowContentStackLayout.addWidget(self.loginBox)
 
-        test = widget.QLabel()
-        test.setStyleSheet("font-size: 30px;")
-        test.setText("Main Application Content")
-        self.windowContentStackLayout.addWidget(utilities.centerWidget(test))
+        # Application placeholder
+        self.placeholder = widget.QLabel()
+        self.placeholder.setAlignment(core.Qt.AlignCenter)
+        self.placeholder.setStyleSheet("font-size: 30px;")
+        self.windowContentStackLayout.addWidget(utilities.centerWidget(self.placeholder))
 
         # Set window size and position
         self.setWindowSizeAndPosition()
@@ -152,12 +154,19 @@ class AppWindow(widget.QMainWindow):
     def hideOverlay(self) -> None:
         self.disconnectOverlay.hide()
 
-    def event(self, event):
+    def setUserToken(self, token: str) -> None:
+        self.userToken = token
+
+    def getUserToken(self) -> str:
+        return self.userToken
+
+    def event(self, event) -> bool:
+        # Handle ccore.SignInEvent
         if event.type() == ccore.SignInEvent.EventType:
-            # Handle ccore.SignInEvent
-            print(event.userToken)
+            self.setUserToken(token=event.userToken)
             self.windowContentStackLayout.setCurrentIndex(1)
             self.loginBox.setParent(None)
+            self.placeholder.setText(f"Main Application Content\nUser Token: {self.getUserToken()}")
             return True
         return super().event(event)
 
