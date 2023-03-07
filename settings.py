@@ -14,7 +14,7 @@ def shiftByDelta(color: gui.QColor, delta: int):
 
 class DotsPerInch:
     def __init__(self):
-        self.dpi = 6
+        self.dpi = None
 
     def setScreen(self, screen):
         self.dpi = screen.physicalDotsPerInch() / 140

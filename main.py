@@ -1,16 +1,19 @@
-import PyQt5.QtWidgets as widget
+import sys
+import time
+
 import PyQt5.QtCore as core
 import PyQt5.QtGui as gui
-import sys
-import settings
+import PyQt5.QtWidgets as widget
 import mysql.connector as ms
-import utilities
-import time
-import cwidget
+
 import ccore
+import cwidget
+import settings
+import utilities
+import content
 
 
-class AppWindow(widget.QMainWindow):
+class ApplicationWindow(widget.QMainWindow):
     def __init__(self, app: widget.QApplication):
         super().__init__()
         self.baseApplication = app
@@ -29,8 +32,7 @@ class AppWindow(widget.QMainWindow):
         self.setWindowTitle("Junktion Suite Login")
         self.setWindowIcon(gui.QIcon("icon.ico"))
 
-        ### Main Application Code ###
-
+        # Main application code
         self.windowContentStackLayout = widget.QStackedLayout()
         self.centralWidget = widget.QWidget()
         self.centralWidget.setLayout(self.windowContentStackLayout)
@@ -43,10 +45,8 @@ class AppWindow(widget.QMainWindow):
         self.windowContentStackLayout.addWidget(self.loginBox)
 
         # Application placeholder
-        self.placeholder = widget.QLabel()
-        self.placeholder.setAlignment(core.Qt.AlignCenter)
-        self.placeholder.setStyleSheet("font-size: 30px;")
-        self.windowContentStackLayout.addWidget(utilities.centerWidget(self.placeholder))
+        self.mainApplication = content.FileShareApplication()
+        self.windowContentStackLayout.addWidget(self.mainApplication)
 
         # Set window size and position
         self.setWindowSizeAndPosition()
@@ -166,7 +166,7 @@ class AppWindow(widget.QMainWindow):
             self.setUserToken(token=event.userToken)
             self.windowContentStackLayout.setCurrentIndex(1)
             self.loginBox.setParent(None)
-            self.placeholder.setText(f"Main Application Content\nUser Token: {self.getUserToken()}")
+            self.mainApplication.setUserToken(token=self.getUserToken())
             return True
         return super().event(event)
 
@@ -193,5 +193,5 @@ def exceptionHandler(exceptionType, value, traceback) -> None:
 if __name__ == "__main__":
     application = widget.QApplication(sys.argv)
     sys.excepthook = exceptionHandler
-    window = AppWindow(app=application)
+    window = ApplicationWindow(app=application)
     application.exec()
