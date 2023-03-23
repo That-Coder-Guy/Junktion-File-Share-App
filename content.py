@@ -11,19 +11,32 @@ import ccore
 
 
 class FileShareApplication(widget.QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent: widget.QWidget):
+        super().__init__(parent)
         self.userToken = None
+        self.username = None
 
-        # Define content
+        # Set titlebar/content layout
+        self.contentLayout = widget.QVBoxLayout(self)
+        self.contentLayout.setContentsMargins(0, 0, 0, 0)
+        self.contentLayout.setSpacing(0)
+        self.contentLayout.setAlignment(core.Qt.AlignTop)
+        self.setLayout(self.contentLayout)
 
+        # Titlebar
+        self.titleBar = cwidget.TitleBar(self)
+        self.contentLayout.addWidget(self.titleBar)
+
+        # Navigation bar
+        self.navigationBar = cwidget.NavigationBar(self)
+        self.contentLayout.addWidget(self.navigationBar)
 
     def setUserToken(self, token: str) -> None:
-        self.userToken = token
-        self.loadUserData()
+        self.loadContent()
 
-    def getUserToken(self) -> str:
-        return self.userToken
+    def loadContent(self) -> None:
+        self.loadUserData()
+        self.setMinimumSize(700, 500)
 
     def loadUserData(self) -> None:
         pass

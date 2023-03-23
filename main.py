@@ -29,7 +29,7 @@ class ApplicationWindow(widget.QMainWindow):
         self.disconnectOverlay.hide()
 
         # Define window
-        self.setWindowTitle("Junktion Suite Login")
+        self.setWindowTitle("Junktion Suite")
         self.setWindowIcon(gui.QIcon("icon.ico"))
 
         # Main application code
@@ -45,7 +45,7 @@ class ApplicationWindow(widget.QMainWindow):
         self.windowContentStackLayout.addWidget(self.loginBox)
 
         # Application placeholder
-        self.mainApplication = content.FileShareApplication()
+        self.mainApplication = content.FileShareApplication(self)
         self.windowContentStackLayout.addWidget(self.mainApplication)
 
         # Set window size and position
