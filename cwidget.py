@@ -532,7 +532,9 @@ class NavigationBar(widget.QFrame):
     def __init__(self, parent: widget.QWidget):
         super().__init__(parent)
         layout = widget.QHBoxLayout()
-        layout.setContentsMargins(5 * settings.DPI, 5 * settings.DPI, 5 * settings.DPI, 5 * settings.DPI)
+        layout.setContentsMargins(10 * settings.DPI, 5 * settings.DPI, 10 * settings.DPI, 5 * settings.DPI)
+        layout.setSpacing(50)
+
         self.setLayout(layout)
         self.setFixedHeight(60 * settings.DPI)
 
@@ -543,6 +545,9 @@ class NavigationBar(widget.QFrame):
         self.drawBackground()
 
         # Add search bar
+        self.directoryBar = DirectoryBar(self)
+        layout.addWidget(self.directoryBar)
+
         self.searchBar = SearchBar(self)
         layout.addWidget(self.searchBar)
 
@@ -558,32 +563,32 @@ class NavigationBar(widget.QFrame):
         self.setPalette(self.palette)
 
 
-class SearchBar(widget.QFrame):
+class DirectoryBar(widget.QFrame):
     def __init__(self, parent: widget.QWidget):
         super().__init__(parent)
         layout = widget.QHBoxLayout()
-        layout.setContentsMargins(15 * settings.DPI, 2 * settings.DPI, 15 * settings.DPI, 2 * settings.DPI)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.setLayout(layout)
         self.setFixedHeight(45 * settings.DPI)
 
         # Add text input
-        self.searchInput = widget.QLineEdit(self)
-        self.searchInput.setPlaceholderText("Search")
-        self.searchInput.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
-        self.searchInput.setStyleSheet("border-style: solid;"
-                                       f"background-color: rgba{(255, 255, 255, 190)};"
-                                       f"border-top-left-radius: {6 * settings.DPI}px;"
-                                       f"border-bottom-left-radius: {6 * settings.DPI}px;"
-                                       f"font-size: {20 * settings.DPI}px;"
-                                       f"padding-left: {15 * settings.DPI}px;")
-        self.searchInput.returnPressed.connect(self.startSearch)
-        layout.addWidget(self.searchInput)
+        self.directorySearchInput = widget.QLineEdit(self)
+        self.directorySearchInput.setPlaceholderText("C:\\")
+        self.directorySearchInput.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
+        self.directorySearchInput.setStyleSheet("border-style: solid;"
+                                                f"background-color: rgba{(255, 255, 255, 190)};"
+                                                f"border-top-left-radius: {6 * settings.DPI}px;"
+                                                f"border-bottom-left-radius: {6 * settings.DPI}px;"
+                                                f"font-size: {20 * settings.DPI}px;"
+                                                f"padding-left: {15 * settings.DPI}px;")
+        self.directorySearchInput.returnPressed.connect(self.startDirectorySearch)
+        layout.addWidget(self.directorySearchInput)
 
         # Add refresh button
         self.refreshButton = widget.QPushButton(self)
         self.refreshButton.setSizePolicy(widget.QSizePolicy.Fixed, widget.QSizePolicy.Expanding)
-        self.refreshButton.setFixedWidth(50 * settings.DPI)
+        self.refreshButton.setFixedWidth(45 * settings.DPI)
         self.refreshButton.setStyleSheet("QPushButton {"
                                          "border: none;"
                                          f"background-color: rgb{settings.DEFAULT_COLOR.getRgb()};"
@@ -611,8 +616,21 @@ class SearchBar(widget.QFrame):
     def refresh(self) -> None:
         print("Refresh")
 
-    def startSearch(self) -> None:
-        self.window().threadManager.start(self.search)
+    def startDirectorySearch(self) -> None:
+        self.window().threadManager.start(self.directorySearch)
 
-    def search(self) -> None:
-        print("Search")
+    def directorySearch(self) -> None:
+        print("Directory Search")
+
+
+class SearchBar(widget.QLineEdit):
+    def __init__(self, parent: widget.QWidget):
+        super().__init__(parent)
+        self.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
+        self.setFixedHeight(45 * settings.DPI)
+        self.setPlaceholderText("Search")
+        self.setStyleSheet("border-style: solid;"
+                           f"background-color: rgba{(255, 255, 255, 190)};"
+                           f"border-radius: {6 * settings.DPI}px;"
+                           f"font-size: {20 * settings.DPI}px;"
+                           f"padding-left: {15 * settings.DPI}px;")
