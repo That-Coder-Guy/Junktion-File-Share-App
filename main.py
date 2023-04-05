@@ -116,6 +116,7 @@ class ApplicationWindow(widget.QMainWindow):
         executed = False
         result = tuple()
         while not executed:
+
             if self.exiting() is True:
                 return None
             elif utilities.connectedToInternet():

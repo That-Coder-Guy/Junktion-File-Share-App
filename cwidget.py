@@ -544,12 +544,18 @@ class NavigationBar(widget.QFrame):
 
         self.drawBackground()
 
-        # Add search bar
-        self.directoryBar = DirectoryBar(self)
-        layout.addWidget(self.directoryBar)
+        # Add back buttons
+        self.backButton = BackButton(self)
+        self.backButton.clicked.connect(self.back)
+        layout.addWidget(self.backButton)
 
+        # Add directory bar
+        self.directoryBar = DirectoryBar(self)
+        layout.addWidget(self.directoryBar, 2)
+
+        # Add search bar
         self.searchBar = SearchBar(self)
-        layout.addWidget(self.searchBar)
+        layout.addWidget(self.searchBar, 1)
 
     def resizeEvent(self, event: gui.QResizeEvent) -> None:
         super().resizeEvent(event)
@@ -562,6 +568,9 @@ class NavigationBar(widget.QFrame):
         self.palette.setBrush(self.backgroundRole(), gradient)
         self.setPalette(self.palette)
 
+    def back(self) -> None:
+        print("Back")
+
 
 class DirectoryBar(widget.QFrame):
     def __init__(self, parent: widget.QWidget):
@@ -572,7 +581,7 @@ class DirectoryBar(widget.QFrame):
         self.setLayout(layout)
         self.setFixedHeight(45 * settings.DPI)
 
-        # Add text input
+        # Add directory input
         self.directorySearchInput = widget.QLineEdit(self)
         self.directorySearchInput.setPlaceholderText("C:\\")
         self.directorySearchInput.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
@@ -626,7 +635,7 @@ class DirectoryBar(widget.QFrame):
 class SearchBar(widget.QLineEdit):
     def __init__(self, parent: widget.QWidget):
         super().__init__(parent)
-        self.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
+        self.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Fixed)
         self.setFixedHeight(45 * settings.DPI)
         self.setPlaceholderText("Search")
         self.setStyleSheet("border-style: solid;"
@@ -634,3 +643,15 @@ class SearchBar(widget.QLineEdit):
                            f"border-radius: {6 * settings.DPI}px;"
                            f"font-size: {20 * settings.DPI}px;"
                            f"padding-left: {15 * settings.DPI}px;")
+
+
+class BackButton(widget.QPushButton):
+    def __init__(self, parent: widget.QWidget):
+        super().__init__(parent)
+        self.setSizePolicy(widget.QSizePolicy.Fixed, widget.QSizePolicy.Fixed)
+        self.setFixedHeight(45 * settings.DPI)
+        self.image = gui.QIcon("resources/left arrow.png")
+        self.setIcon(self.image)
+        self.setIconSize(core.QSize(25 * settings.DPI, 25 * settings.DPI))
+        self.setStyleSheet("background-color: transparent;"
+                           f"padding-right: {15 * settings.DPI}px;")
