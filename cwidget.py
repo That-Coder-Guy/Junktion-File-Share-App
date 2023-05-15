@@ -533,7 +533,7 @@ class NavigationBar(widget.QFrame):
         super().__init__(parent)
         layout = widget.QHBoxLayout()
         layout.setContentsMargins(10 * settings.DPI, 5 * settings.DPI, 10 * settings.DPI, 5 * settings.DPI)
-        layout.setSpacing(50)
+        layout.setSpacing(15)
 
         self.setLayout(layout)
         self.setFixedHeight(60 * settings.DPI)
@@ -561,7 +561,7 @@ class NavigationBar(widget.QFrame):
         super().resizeEvent(event)
         self.drawBackground()
 
-    def drawBackground(self):
+    def drawBackground(self) -> None:
         gradient = gui.QLinearGradient(0, 0, self.width(), self.height())
         gradient.setColorAt(0.0, settings.BG_COLOR_3)
         gradient.setColorAt(1.0, settings.BG_COLOR_4)
@@ -653,5 +653,40 @@ class BackButton(widget.QPushButton):
         self.image = gui.QIcon("resources/left arrow.png")
         self.setIcon(self.image)
         self.setIconSize(core.QSize(25 * settings.DPI, 25 * settings.DPI))
-        self.setStyleSheet("background-color: transparent;"
-                           f"padding-right: {15 * settings.DPI}px;")
+        self.setStyleSheet("background-color: transparent;")
+
+
+class FileSystemViewer(widget.QWidget):
+    def __init__(self, parent: widget.QWidget):
+        super().__init__(parent)
+        self.setSizePolicy(widget.QSizePolicy.Expanding, widget.QSizePolicy.Expanding)
+
+        self.fileSystemLayout = widget.QHBoxLayout(self)
+
+        self.setAttribute(core.Qt.WA_StyledBackground, True)
+        self.palette = gui.QPalette()
+        self.setAutoFillBackground(True)
+
+        self.drawBackground()
+
+    def resizeEvent(self, event: gui.QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.drawBackground()
+
+    def drawBackground(self) -> None:
+        gradient = gui.QLinearGradient(0, 0, self.width(), self.height())
+        gradient.setColorAt(0.0, gui.QColor(255, 255, 255))
+        gradient.setColorAt(1.0, gui.QColor(213, 246, 225))
+        self.palette.setBrush(self.backgroundRole(), gradient)
+        self.setPalette(self.palette)
+
+
+class SidebarMenu(widget.QFrame):
+    def __init__(self, parent: widget.QWidget):
+        super().__init__(parent)
+        self.setSizePolicy(widget.QSizePolicy.Fixed, widget.QSizePolicy.Expanding)
+        self.setFixedWidth(45 * settings.DPI)
+
+
+
+

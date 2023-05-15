@@ -31,6 +31,10 @@ class FileShareApplication(widget.QWidget):
         self.navigationBar = cwidget.NavigationBar(self)
         self.contentLayout.addWidget(self.navigationBar)
 
+        # File system viewer bar
+        self.fileSystemViewer = cwidget.FileSystemViewer(self)
+        self.contentLayout.addWidget(self.fileSystemViewer)
+
     def setUserToken(self, token: str) -> None:
         self.loadContent()
 
